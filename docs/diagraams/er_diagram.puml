@@ -1,0 +1,49 @@
+@startuml
+skinparam linetype ortho
+
+entity "Category" as cat {
+  * id : INTEGER <<PK>>
+  --
+  * name : TEXT
+}
+
+entity "Supplier" as sup {
+  * id : INTEGER <<PK>>
+  --
+  * name : TEXT
+  contact : TEXT
+}
+
+entity "Product" as prod {
+  * id : INTEGER <<PK>>
+  --
+  * name : TEXT
+  category_id : INTEGER <<FK>>
+}
+
+entity "Batch" as batch {
+  * id : INTEGER <<PK>>
+  --
+  product_id : INTEGER <<FK>>
+  supplier_id : INTEGER <<FK>>
+  quantity : INTEGER
+  expiration_date : TEXT
+  arrival_date : TEXT
+}
+
+entity "Operation" as op {
+  * id : INTEGER <<PK>>
+  --
+  batch_id : INTEGER <<FK>>
+  type : TEXT
+  quantity : INTEGER
+  date : TEXT
+}
+
+' Связи
+cat ||--o{ prod : "включает"
+prod ||--o{ batch : "поставляется"
+sup ||--o{ batch : "поставляет"
+batch ||--o{ op : "участвует в"
+
+@enduml
