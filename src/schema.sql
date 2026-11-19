@@ -1,17 +1,25 @@
 -- schema.sql
 
--- Включаем поддержку внешних ключей в SQLite
 PRAGMA foreign_keys = ON;
 
--- 1. Удаление старых таблиц (в обратном порядке создания)
+-- Удаление старых таблиц
 DROP TABLE IF EXISTS Operation;
 DROP TABLE IF EXISTS Batch;
 DROP TABLE IF EXISTS Product;
 DROP TABLE IF EXISTS Supplier;
 DROP TABLE IF EXISTS Category;
+DROP TABLE IF EXISTS User;
 
--- 2. Создание таблиц
+-- Таблица пользователей (для авторизации)
+CREATE TABLE User (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    login TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL CHECK(role IN ('admin', 'clerk')),
+    name TEXT NOT NULL
+);
 
+-- Остальные таблицы (как в ЛР №3)
 CREATE TABLE Category (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE
@@ -50,7 +58,10 @@ CREATE TABLE Operation (
     FOREIGN KEY (batch_id) REFERENCES Batch(id)
 );
 
--- 3. Добавление тестовых данных
+-- Тестовые данные
+INSERT INTO User (login, password, role, name) VALUES 
+('admin', 'admin123', 'admin', 'Администратор'),
+('clerk', 'clerk123', 'clerk', 'Кладовщик Иван');
 
 INSERT INTO Category (name) VALUES 
 ('Молочные продукты'),
@@ -59,19 +70,15 @@ INSERT INTO Category (name) VALUES
 
 INSERT INTO Supplier (name, contact) VALUES 
 ('Молокозавод №1', '+79001234567'),
-('Фермер Иванов', '+79007654321'),
-('ООО "Вода"', 'info@water.ru');
+('Фермер Иванов', '+79007654321');
 
 INSERT INTO Product (name, category_id) VALUES 
 ('Молоко 3.2%', 1),
-('Помидоры', 2),
-('Вода минеральная', 3);
+('Помидоры', 2);
 
 INSERT INTO Batch (product_id, supplier_id, quantity, expiration_date, arrival_date) VALUES 
 (1, 1, 100, '2026-11-15', '2026-10-25'),
-(2, 2, 50, '2026-11-05', '2026-10-28'),
-(3, 3, 200, '2027-10-25', '2026-10-30');
+(2, 2, 50, '2026-11-05', '2026-10-28');
 
 INSERT INTO Operation (batch_id, type, quantity, date) VALUES 
-(1, 'IN', 100, '2026-10-25'),
-(2, 'IN', 50, '2026-10-28');
+(1, 'IN', 100, '2026-10-25');

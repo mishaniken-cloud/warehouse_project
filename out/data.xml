@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<products><product><id>1</id><name>Молоко 3.2%</name><category><id>1</id><name>Молочные продукты</name></category></product><product><id>2</id><name>Помидоры</name><category><id>2</id><name>Овощи</name></category></product><product><id>3</id><name>Вода минеральная</name><category><id>3</id><name>Напитки</name></category></product></products>
