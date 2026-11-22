@@ -3,6 +3,7 @@ import json
 import csv
 import os
 import xml.etree.ElementTree as ET
+import xml.dom.minidom
 import yaml
 
 DB_NAME = 'warehouse.db'
@@ -57,8 +58,17 @@ def export_xml(data):
         cat = ET.SubElement(prod, 'category')
         ET.SubElement(cat, 'id').text = str(item['category']['id'])
         ET.SubElement(cat, 'name').text = item['category']['name']
-    tree = ET.ElementTree(root)
-    tree.write(os.path.join(OUT_DIR, 'data.xml'), encoding='utf-8', xml_declaration=True)
+    
+    xml_str = ET.tostring(root, encoding='unicode')
+    dom = xml.dom.minidom.parseString(xml_str)
+    pretty_xml = dom.toprettyxml(indent='  ')
+    lines = pretty_xml.split('\n')
+    if lines and lines[0].strip() == '':
+        lines = lines[1:]
+    pretty_xml = '\n'.join(lines)
+    
+    with open(os.path.join(OUT_DIR, 'data.xml'), 'w', encoding='utf-8') as f:
+        f.write(pretty_xml)
 
 def export_yaml(data):
     with open(os.path.join(OUT_DIR, 'data.yaml'), 'w', encoding='utf-8') as f:
